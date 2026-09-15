@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matic Market — Formulario de alta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Josefin+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FDF5E7;
+    --cream-soft: rgba(166,134,103,0.14);
+    --camel:#A68667;
+    --camel-dark:#8f6f52;
+    --olive:#A68667;
+    --charcoal:#6B5138;
+    --muted: #A68667;
+    --line: rgba(166,134,103,0.35);
+    --radius: 16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--charcoal);
+    font-family:'Josefin Sans', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:36px 24px 80px;
+  }
+
+  /* header */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:34px;
+    flex-wrap:wrap;
+    gap:14px;
+  }
+  .logo{
+    font-family:'Fredoka', sans-serif;
+    font-weight:700;
+    font-size:30px;
+    color:var(--charcoal);
+    letter-spacing:-0.5px;
+  }
+  .logo .dot{color:var(--camel);}
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:2px;
+    color:var(--muted);
+    font-weight:600;
+  }
+
+  /* tabs */
+  .tabs{
+    display:flex;
+    gap:6px;
+    background:var(--cream-soft);
+    padding:5px;
+    border-radius:999px;
+    margin-bottom:32px;
+    width:fit-content;
+  }
+  .tab-btn{
+    border:none;
+    background:transparent;
+    font-family:'Josefin Sans', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    padding:9px 20px;
+    border-radius:999px;
+    cursor:pointer;
+    color:var(--muted);
+    transition:background .2s ease, color .2s ease;
+  }
+  .tab-btn.active{
+    background:var(--charcoal);
+    color:var(--cream);
+  }
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* card */
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:40px;
+  }
+  @media (max-width:600px){ .card{padding:26px;} .wrap{padding:24px 16px 60px;} }
+
+  h1.title{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:32px;
+    line-height:1.15;
+    margin:0 0 10px;
+    color:var(--charcoal);
+  }
+  p.sub{
+    font-size:16px;
+    color:var(--muted);
+    margin:0 0 30px;
+    max-width:52ch;
+    line-height:1.5;
+  }
+
+  .section-label{
+    font-size:12px;
+    letter-spacing:2px;
+    font-weight:600;
+    color:var(--camel-dark);
+    margin:28px 0 14px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+  }
+  .section-label:first-of-type{border-top:none; margin-top:0; padding-top:0;}
+
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;
+    font-size:14.5px;
+    font-weight:600;
+    margin-bottom:6px;
+    color:var(--charcoal);
+  }
+  .field label .req{color:var(--camel-dark); margin-left:2px;}
+  .field input, .field select, .field textarea{
+    width:100%;
+    font-family:'Josefin Sans', sans-serif;
+    font-size:15px;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:var(--cream);
+    color:var(--charcoal);
+    outline:none;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .field textarea{resize:vertical; min-height:80px;}
+  .field input[type=file]{
+    padding:12px 14px;
+    border:1.5px dashed var(--line);
+    background:var(--cream-soft);
+    cursor:pointer;
+    font-size:13.5px;
+  }
+  .field input[type=file]:hover{border-color:var(--camel);}
+  .photo-preview{
+    display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;
+  }
+  .photo-preview img{
+    width:64px; height:64px; object-fit:cover;
+    border-radius:10px; border:1.5px solid var(--line);
+  }
+  .photo-preview video{
+    width:120px; height:80px; object-fit:cover;
+    border-radius:10px; border:1.5px solid var(--line);
+    background:#000;
+  }
+  .checkbox-group{
+    display:flex; flex-wrap:wrap; gap:10px 20px; margin-top:4px;
+  }
+  .checkbox-item{
+    display:flex; align-items:center; gap:8px;
+    font-size:14.5px; font-weight:500; color:var(--charcoal);
+    cursor:pointer; font-family:'Josefin Sans', sans-serif;
+  }
+  .checkbox-item input[type=checkbox]{
+    width:18px; height:18px; accent-color:var(--camel); cursor:pointer;
+    flex-shrink:0;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    border-color:var(--camel);
+    background:#fff;
+  }
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:560px){ .row2{grid-template-columns:1fr;} }
+
+  .hint{font-size:12.5px; color:var(--muted); margin-top:16px;}
+
+  button.primary{
+    font-family:'Josefin Sans', sans-serif;
+    font-weight:600;
+    font-size:16px;
+    background:var(--camel);
+    color:#fff;
+    border:none;
+    padding:14px 30px;
+    border-radius:999px;
+    cursor:pointer;
+    margin-top:8px;
+    transition:background .15s ease, transform .1s ease;
+  }
+  button.primary:hover{background:var(--camel-dark);}
+  button.primary:active{transform:scale(.98);}
+  button.ghost{
+    font-family:'Josefin Sans', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    background:transparent;
+    color:var(--muted);
+    border:1.5px solid var(--line);
+    padding:10px 18px;
+    border-radius:999px;
+    cursor:pointer;
+  }
+  button.ghost:hover{border-color:var(--muted);}
+  button:disabled{opacity:.55; cursor:not-allowed;}
+
+  .error-text{color:#6B5138; font-size:13px; margin-top:16px; font-weight:600;}
+
+  /* success state */
+  .success{
+    text-align:center;
+    padding:30px 10px 10px;
+  }
+  .success .check{
+    width:56px;height:56px;border-radius:50%;
+    background:var(--camel);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 20px;
+  }
+  .success .check svg{width:26px;height:26px;}
+
+  /* backup panel */
+  .panel-top{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:12px; margin-bottom:22px;
+  }
+  .panel-top .count{
+    font-family:'Fredoka', sans-serif;
+    font-size:15px;
+    color:var(--muted);
+  }
+  .toolbar{
+    display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;
+  }
+  .toolbar input[type=text]{
+    flex:1; min-width:180px;
+    font-family:'Josefin Sans', sans-serif;
+    padding:10px 14px; border-radius:12px;
+    border:1.5px solid var(--line); background:var(--cream);
+    font-size:14px; outline:none;
+  }
+  .toolbar input[type=text]:focus{border-color:var(--camel); background:#fff;}
+
+  table{width:100%; border-collapse:collapse; font-size:14px;}
+  thead th{
+    text-align:left; font-weight:600; color:var(--muted);
+    font-size:12px; letter-spacing:1px;
+    padding:8px 10px; border-bottom:1.5px solid var(--line);
+  }
+  tbody td{padding:12px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tbody tr:hover{background:var(--cream);}
+  tbody tr{cursor:pointer;}
+  .empty-state{
+    text-align:center; padding:50px 20px; color:var(--muted);
+  }
+  .empty-state .big{font-family:'Fredoka', sans-serif; font-size:19px; color:var(--charcoal); margin-bottom:6px;}
+
+  .detail-box{
+    background:var(--cream); border-radius:14px; padding:20px;
+    margin-top:14px; font-size:14px; line-height:1.7;
+    display:none;
+  }
+  .detail-box.open{display:block;}
+  .detail-box b{color:var(--muted); font-weight:600;}
+
+  .gate{
+    max-width:380px; margin:60px auto; text-align:center;
+  }
+  .gate .card{padding:34px;}
+  .gate input{
+    width:100%; padding:12px 14px; border-radius:12px;
+    border:1.5px solid var(--line); background:var(--cream);
+    font-family:'Josefin Sans', sans-serif; font-size:15px;
+    margin:14px 0; outline:none;
+  }
+  .gate input:focus{border-color:var(--camel); background:#fff;}
+  .gate-note{font-size:12.5px; color:var(--muted); margin-top:14px; line-height:1.6;}
+
+  .row-actions{display:flex; gap:8px; margin-top:12px;}
+  footer.foot{
+    margin-top:40px; text-align:center; font-size:12px; color:var(--muted);
+    letter-spacing:1px;
+  }
+
+  .sign-pad-wrap{ }
+  .sign-pad{
+    width:100%;
+    height:160px;
+    display:block;
+    background:var(--cream);
+    border:1.5px dashed var(--line);
+    border-radius:12px;
+    touch-action:none;
+    cursor:crosshair;
+  }
+  .sign-pad.filled{border-style:solid; border-color:var(--camel);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="logo">matic<span class="dot">.</span></div>
+    <div class="eyebrow">FORMULARIO DE ALTA · MATIC MARKET</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabFormBtn" onclick="switchTab('form')">Completar formulario</button>
+    <button class="tab-btn" id="tabPanelBtn" onclick="switchTab('panel')">Panel de respaldo</button>
+  </div>
+
+  <!-- FORM VIEW -->
+  <div class="view active" id="view-form">
+    <div class="card" id="formCard">
+      <h1 class="title">Contanos sobre vos y tu producto</h1>
+      <p class="sub">Completá tus datos y el detalle del producto o experiencia que querés ofrecer en Matic Market. La información queda guardada de forma segura y nuestro equipo se pone en contacto a la brevedad.</p>
+
+      <form id="clientForm">
+        <div class="section-label">DATOS DE LA EMPRESA</div>
+        <div class="field">
+          <label>Nombre / Razón social<span class="req">*</span></label>
+          <input type="text" name="nombre" required>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>CUIT / Tax ID<span class="req">*</span></label>
+            <input type="text" name="cuit" required>
+          </div>
+          <div class="field">
+            <label>País<span class="req">*</span></label>
+            <input type="text" name="pais" required>
+          </div>
+        </div>
+
+        <div class="section-label">DATOS DE CONTACTO</div>
+        <div class="row2">
+          <div class="field">
+            <label>Persona de contacto<span class="req">*</span></label>
+            <input type="text" name="contacto" required>
+          </div>
+          <div class="field">
+            <label>Email de contacto<span class="req">*</span></label>
+            <input type="email" name="email" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>Teléfono / móvil<span class="req">*</span></label>
+          <input type="tel" name="telefono" required>
+        </div>
+
+        <div class="section-label">DIRECCIÓN</div>
+        <div class="field">
+          <label>Dirección y código postal<span class="req">*</span></label>
+          <input type="text" name="direccion" required>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Ciudad</label>
+            <input type="text" name="ciudad">
+          </div>
+          <div class="field">
+            <label>Provincia</label>
+            <input type="text" name="provincia">
+          </div>
+        </div>
+
+        <div class="section-label">FORMAS DE COBRO ACEPTADAS</div>
+        <p class="hint" style="margin:-6px 0 16px;">Elegí las formas de cobro que aceptás para tus ventas en Matic Market.</p>
+        <div class="field">
+          <label>Medios de pago<span class="req">*</span></label>
+          <div class="checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" name="formaCobro" value="Mercado Pago"> Mercado Pago</label>
+            <label class="checkbox-item"><input type="checkbox" name="formaCobro" value="Stripe"> Stripe</label>
+            <label class="checkbox-item"><input type="checkbox" name="formaCobro" value="Transferencia"> Transferencia</label>
+            <label class="checkbox-item"><input type="checkbox" name="formaCobro" value="Wallet Crypto"> Wallet Crypto</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Detalle o información de interés</label>
+          <textarea name="detalleInteres" placeholder="Ej: alias / CBU, cuenta de Mercado Pago, dirección de wallet, condiciones especiales de cobro, u otro dato que quieras dejar registrado"></textarea>
+        </div>
+
+        <div class="section-label">PRODUCTO / EXPERIENCIA 1</div>
+        <p class="hint" style="margin:-6px 0 16px;">Completá estos datos para dar de alta un producto o experiencia en Matic Market. Podés cargar hasta 3 productos distintos en este mismo formulario.</p>
+        <div class="field">
+          <label>Nombre experiencia / producto<span class="req">*</span></label>
+          <input type="text" name="nombreProducto1" required>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Variedad<span class="req">*</span></label>
+            <input type="text" name="variedad1" required>
+          </div>
+          <div class="field">
+            <label>Año<span class="req">*</span></label>
+            <input type="text" name="anio1" inputmode="numeric" maxlength="4" placeholder="Ej: 2024" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>Fecha óptima consumo / uso<span class="req">*</span></label>
+          <input type="text" name="fechaOptima1" placeholder="Ej: Diciembre 2026" required>
+        </div>
+        <div class="field">
+          <label>Descripción<span class="req">*</span></label>
+          <textarea name="descripcionProducto1" placeholder="Describí el producto o experiencia" required></textarea>
+        </div>
+        <div class="field">
+          <label>Fotos y videos del producto / experiencia</label>
+          <input type="file" id="fotos1" accept="image/*,video/*" multiple>
+          <div class="hint" style="margin-top:8px;">Hasta 3 archivos: fotos (JPG o PNG) o videos (MP4/MOV, máx. 8MB por video).</div>
+          <div class="photo-preview" id="fotos1Preview"></div>
+        </div>
+
+        <div class="section-label">PRODUCTO / EXPERIENCIA 2 <span style="text-transform:none; letter-spacing:0; font-weight:400;">(opcional)</span></div>
+        <div class="field">
+          <label>Nombre experiencia / producto</label>
+          <input type="text" name="nombreProducto2">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Variedad</label>
+            <input type="text" name="variedad2">
+          </div>
+          <div class="field">
+            <label>Año</label>
+            <input type="text" name="anio2" inputmode="numeric" maxlength="4" placeholder="Ej: 2024">
+          </div>
+        </div>
+        <div class="field">
+          <label>Fecha óptima consumo / uso</label>
+          <input type="text" name="fechaOptima2" placeholder="Ej: Diciembre 2026">
+        </div>
+        <div class="field">
+          <label>Descripción</label>
+          <textarea name="descripcionProducto2" placeholder="Describí el producto o experiencia"></textarea>
+        </div>
+        <div class="field">
+          <label>Fotos y videos del producto / experiencia</label>
+          <input type="file" id="fotos2" accept="image/*,video/*" multiple>
+          <div class="hint" style="margin-top:8px;">Hasta 3 archivos: fotos (JPG o PNG) o videos (MP4/MOV, máx. 8MB por video).</div>
+          <div class="photo-preview" id="fotos2Preview"></div>
+        </div>
+
+        <div class="section-label">PRODUCTO / EXPERIENCIA 3 <span style="text-transform:none; letter-spacing:0; font-weight:400;">(opcional)</span></div>
+        <div class="field">
+          <label>Nombre experiencia / producto</label>
+          <input type="text" name="nombreProducto3">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Variedad</label>
+            <input type="text" name="variedad3">
+          </div>
+          <div class="field">
+            <label>Año</label>
+            <input type="text" name="anio3" inputmode="numeric" maxlength="4" placeholder="Ej: 2024">
+          </div>
+        </div>
+        <div class="field">
+          <label>Fecha óptima consumo / uso</label>
+          <input type="text" name="fechaOptima3" placeholder="Ej: Diciembre 2026">
+        </div>
+        <div class="field">
+          <label>Descripción</label>
+          <textarea name="descripcionProducto3" placeholder="Describí el producto o experiencia"></textarea>
+        </div>
+        <div class="field">
+          <label>Fotos y videos del producto / experiencia</label>
+          <input type="file" id="fotos3" accept="image/*,video/*" multiple>
+          <div class="hint" style="margin-top:8px;">Hasta 3 archivos: fotos (JPG o PNG) o videos (MP4/MOV, máx. 8MB por video).</div>
+          <div class="photo-preview" id="fotos3Preview"></div>
+        </div>
+
+        <div class="field">
+          <label>Firma<span class="req">*</span></label>
+          <div class="sign-pad-wrap">
+            <canvas id="signPad" class="sign-pad"></canvas>
+            <button type="button" class="ghost" id="clearSignBtn" style="margin-top:10px;">Borrar firma</button>
+          </div>
+        </div>
+
+        <div class="section-label">REDES Y COMENTARIOS</div>
+        <div class="field">
+          <label>Redes sociales<span class="req">*</span></label>
+          <input type="text" name="redes" placeholder="Instagram, sitio web, LinkedIn, etc." required>
+        </div>
+        <div class="field">
+          <label>Información adicional</label>
+          <textarea name="comentarios" placeholder="Cualquier dato extra que quieras compartir"></textarea>
+        </div>
+
+        <button class="primary" type="submit" id="submitBtn">Enviar información</button>
+        <div class="error-text" id="formError" style="display:none;"></div>
+      </form>
+    </div>
+
+    <!-- success screen (swapped in) -->
+    <div class="card success" id="successCard" style="display:none;">
+      <div class="check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h1 class="title">¡Gracias!</h1>
+      <p class="sub" style="margin:0 auto 20px;">Recibimos tu información correctamente. Nuestro equipo va a revisarla y se va a contactar con vos a la brevedad.</p>
+      <button class="ghost" onclick="resetForm()">Enviar otra respuesta</button>
+    </div>
+  </div>
+
+  <!-- BACKUP PANEL VIEW -->
+  <div class="view" id="view-panel">
+
+    <div class="gate" id="gateBox">
+      <div class="card">
+        <h1 class="title" style="font-size:24px;">Panel de respaldo</h1>
+        <p class="sub" style="margin-bottom:6px;">Acceso para el equipo de Matic Market.</p>
+        <input type="password" id="gateCode" placeholder="Código de acceso" onkeydown="if(event.key==='Enter') checkGate()">
+        <button class="primary" style="width:100%;" onclick="checkGate()">Ingresar</button>
+        <div class="error-text" id="gateError" style="display:none;">Código incorrecto.</div>
+        <p class="gate-note">Este código es solo un filtro básico para que los clientes no entren por error a este panel — no es un sistema de autenticación seguro. Cualquier persona con el enlace de este formulario y el código puede ver los datos guardados acá.</p>
+      </div>
+    </div>
+
+    <div id="panelContent" style="display:none;">
+      <div class="card">
+        <div class="panel-top">
+          <div>
+            <h1 class="title" style="font-size:24px; margin-bottom:4px;">Respuestas recibidas</h1>
+            <div class="count" id="countLabel">0 respuestas</div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="ghost" onclick="downloadCSV()">Descargar CSV</button>
+            <button class="ghost" onclick="refreshData()">Actualizar</button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <input type="text" id="searchInput" placeholder="Buscar por nombre, email o ciudad..." oninput="renderTable()">
+        </div>
+
+        <div id="tableWrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot">MATIC MARKET · FORMULARIO DE ALTA</footer>
+</div>
+
+<script>
+const GATE_CODE = "MATIC2026";
+const SHEETS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyiO8enK9L8U5S-4YDZdgsB9PhJQZrXJeEdLxveH3jBPBrrVXLysVGNSvGC55qgZlqBog/exec";
+let allSubmissions = [];
+let expandedId = null;
+let hasSignature = false;
+
+/* --- signature pad --- */
+const signPad = document.getElementById('signPad');
+const signCtx = signPad.getContext('2d');
+let drawing = false;
+let lastX = 0, lastY = 0;
+
+function resizeSignPad(){
+  const ratio = window.devicePixelRatio || 1;
+  const rect = signPad.getBoundingClientRect();
+  const imgData = hasSignature ? signPad.toDataURL() : null;
+  signPad.width = rect.width * ratio;
+  signPad.height = rect.height * ratio;
+  signCtx.scale(ratio, ratio);
+  signCtx.lineWidth = 2.2;
+  signCtx.lineCap = 'round';
+  signCtx.strokeStyle = '#6B5138';
+  if(imgData){
+    const img = new Image();
+    img.onload = ()=> signCtx.drawImage(img, 0, 0, rect.width, rect.height);
+    img.src = imgData;
+  }
+}
+window.addEventListener('resize', resizeSignPad);
+setTimeout(resizeSignPad, 50);
+
+function getPos(e){
+  const rect = signPad.getBoundingClientRect();
+  const point = e.touches ? e.touches[0] : e;
+  return { x: point.clientX - rect.left, y: point.clientY - rect.top };
+}
+function startDraw(e){
+  e.preventDefault();
+  drawing = true;
+  const p = getPos(e);
+  lastX = p.x; lastY = p.y;
+}
+function moveDraw(e){
+  if(!drawing) return;
+  e.preventDefault();
+  const p = getPos(e);
+  signCtx.beginPath();
+  signCtx.moveTo(lastX, lastY);
+  signCtx.lineTo(p.x, p.y);
+  signCtx.stroke();
+  lastX = p.x; lastY = p.y;
+  if(!hasSignature){ hasSignature = true; signPad.classList.add('filled'); }
+}
+function endDraw(){ drawing = false; }
+
+signPad.addEventListener('mousedown', startDraw);
+signPad.addEventListener('mousemove', moveDraw);
+window.addEventListener('mouseup', endDraw);
+signPad.addEventListener('touchstart', startDraw);
+signPad.addEventListener('touchmove', moveDraw);
+signPad.addEventListener('touchend', endDraw);
+
+document.getElementById('clearSignBtn').addEventListener('click', function(){
+  const rect = signPad.getBoundingClientRect();
+  signCtx.clearRect(0, 0, rect.width, rect.height);
+  hasSignature = false;
+  signPad.classList.remove('filled');
+});
+
+/* --- photo & video handling (preview + resize/encode before storing) --- */
+const MAX_PHOTOS_PER_PRODUCT = 3;
+const MAX_VIDEO_BYTES = 8 * 1024 * 1024; // 8MB por video
+
+function wirePhotoPreview(inputId, previewId){
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  input.addEventListener('change', function(){
+    preview.innerHTML = '';
+    let files = Array.from(input.files || []);
+    const rejected = [];
+    const accepted = [];
+    files.forEach(f=>{
+      if(f.type.startsWith('video/') && f.size > MAX_VIDEO_BYTES){
+        rejected.push(f.name);
+      } else {
+        accepted.push(f);
+      }
+    });
+    const kept = accepted.slice(0, MAX_PHOTOS_PER_PRODUCT);
+
+    // reconstruye el input.files para que solo queden los archivos aceptados
+    if(window.DataTransfer){
+      const dt = new DataTransfer();
+      kept.forEach(f=> dt.items.add(f));
+      input.files = dt.files;
+    }
+
+    if(rejected.length){
+      alert('Estos archivos no se agregaron porque superan el tamaño máximo permitido para videos (8MB): ' + rejected.join(', '));
+    }
+
+    kept.forEach(f=>{
+      if(f.type.startsWith('video/')){
+        const video = document.createElement('video');
+        video.src = URL.createObjectURL(f);
+        video.muted = true;
+        video.controls = true;
+        preview.appendChild(video);
+      } else {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(f);
+        preview.appendChild(img);
+      }
+    });
+  });
+}
+wirePhotoPreview('fotos1', 'fotos1Preview');
+wirePhotoPreview('fotos2', 'fotos2Preview');
+wirePhotoPreview('fotos3', 'fotos3Preview');
+
+function resizeImageFile(file, maxDim, quality){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      const img = new Image();
+      img.onload = function(){
+        let w = img.width, h = img.height;
+        if(w > maxDim || h > maxDim){
+          if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = ()=> reject(new Error('img load failed'));
+      img.src = ev.target.result;
+    };
+    reader.onerror = ()=> reject(new Error('file read failed'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function fileToBase64(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=> resolve(reader.result);
+    reader.onerror = ()=> reject(new Error('file read failed'));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function getResizedPhotos(inputId){
+  const input = document.getElementById(inputId);
+  const files = Array.from(input.files || []).slice(0, MAX_PHOTOS_PER_PRODUCT);
+  const results = [];
+  for(const f of files){
+    try{
+      if(f.type.startsWith('video/')){
+        results.push(await fileToBase64(f));
+      } else {
+        results.push(await resizeImageFile(f, 900, 0.72));
+      }
+    }
+    catch(e){ /* skip file that failed to process */ }
+  }
+  return results;
+}
+
+function switchTab(name){
+  document.getElementById('view-form').classList.toggle('active', name==='form');
+  document.getElementById('view-panel').classList.toggle('active', name==='panel');
+  document.getElementById('tabFormBtn').classList.toggle('active', name==='form');
+  document.getElementById('tabPanelBtn').classList.toggle('active', name==='panel');
+  if(name==='panel' && document.getElementById('panelContent').style.display !== 'none'){
+    refreshData();
+  }
+}
+
+function checkGate(){
+  const val = document.getElementById('gateCode').value;
+  if(val === GATE_CODE){
+    document.getElementById('gateBox').style.display = 'none';
+    document.getElementById('panelContent').style.display = 'block';
+    refreshData();
+  } else {
+    document.getElementById('gateError').style.display = 'block';
+  }
+}
+
+document.getElementById('clientForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const errBox = document.getElementById('formError');
+  errBox.style.display = 'none';
+
+  const formasCobroSeleccionadas = Array.from(document.querySelectorAll('input[name="formaCobro"]:checked')).map(el=> el.value);
+  if(formasCobroSeleccionadas.length === 0){
+    errBox.textContent = 'Elegí al menos una forma de cobro aceptada.';
+    errBox.style.display = 'block';
+    document.querySelector('.checkbox-group').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  if(!hasSignature){
+    errBox.textContent = 'Falta completar la firma antes de enviar.';
+    errBox.style.display = 'block';
+    document.getElementById('signPad').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  const fd = new FormData(e.target);
+  const data = {};
+  fd.forEach((v,k)=>{ if(typeof v === 'string' && k !== 'formaCobro') data[k] = v.trim(); });
+  data.formaCobro = formasCobroSeleccionadas;
+  data.fecha = new Date().toISOString();
+  data.firma = signPad.toDataURL('image/png');
+
+  try{
+    data.fotosProducto1 = await getResizedPhotos('fotos1');
+    data.fotosProducto2 = await getResizedPhotos('fotos2');
+    data.fotosProducto3 = await getResizedPhotos('fotos3');
+  }catch(err){
+    data.fotosProducto1 = data.fotosProducto1 || [];
+    data.fotosProducto2 = data.fotosProducto2 || [];
+    data.fotosProducto3 = data.fotosProducto3 || [];
+  }
+
+  const key = 'submission:' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+
+  try{
+    const result = await window.storage.set(key, JSON.stringify(data), true);
+    if(!result) throw new Error('no result');
+    sendToSheets(data);
+    document.getElementById('formCard').style.display = 'none';
+    document.getElementById('successCard').style.display = 'block';
+  }catch(err){
+    errBox.textContent = 'Hubo un problema al guardar tu información. Por favor intentá de nuevo.';
+    errBox.style.display = 'block';
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'Enviar información';
+  }
+});
+
+function sendToSheets(data){
+  if(!SHEETS_WEBHOOK_URL) return;
+  try{
+    fetch(SHEETS_WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(data)
+    }).catch(()=>{ /* la respuesta ya quedó guardada en el panel de respaldo igual */ });
+  }catch(e){ /* silencioso: el respaldo principal (panel) no depende de esto */ }
+}
+
+function resetForm(){
+  document.getElementById('clientForm').reset();
+  ['fotos1Preview','fotos2Preview','fotos3Preview'].forEach(id=> document.getElementById(id).innerHTML = '');
+  const rect = signPad.getBoundingClientRect();
+  signCtx.clearRect(0, 0, rect.width, rect.height);
+  hasSignature = false;
+  signPad.classList.remove('filled');
+  document.getElementById('formCard').style.display = 'block';
+  document.getElementById('successCard').style.display = 'none';
+}
+
+async function refreshData(){
+  const tableWrap = document.getElementById('tableWrap');
+  tableWrap.innerHTML = '<div class="empty-state">Cargando respuestas...</div>';
+  try{
+    const listResult = await window.storage.list('submission:', true);
+    const keys = (listResult && listResult.keys) ? listResult.keys : [];
+    const items = [];
+    for(const k of keys){
+      try{
+        const r = await window.storage.get(k, true);
+        if(r && r.value){
+          const parsed = JSON.parse(r.value);
+          parsed._key = k;
+          items.push(parsed);
+        }
+      }catch(e){ /* skip unreadable entry */ }
+    }
+    items.sort((a,b)=> new Date(b.fecha) - new Date(a.fecha));
+    allSubmissions = items;
+    renderTable();
+  }catch(e){
+    tableWrap.innerHTML = '<div class="empty-state"><div class="big">No se pudieron cargar los datos</div>Intentá actualizar de nuevo en unos segundos.</div>';
+  }
+}
+
+function renderTable(){
+  const q = (document.getElementById('searchInput').value || '').toLowerCase();
+  const filtered = allSubmissions.filter(s=>
+    !q || (s.nombre||'').toLowerCase().includes(q) ||
+    (s.email||'').toLowerCase().includes(q) ||
+    (s.ciudad||'').toLowerCase().includes(q) ||
+    (s.contacto||'').toLowerCase().includes(q)
+  );
+  document.getElementById('countLabel').textContent = allSubmissions.length + (allSubmissions.length===1 ? ' respuesta' : ' respuestas');
+  const tableWrap = document.getElementById('tableWrap');
+
+  if(filtered.length === 0){
+    tableWrap.innerHTML = '<div class="empty-state"><div class="big">Todavía no hay respuestas</div>Cuando un cliente complete el formulario, va a aparecer acá.</div>';
+    return;
+  }
+
+  let html = '<table><thead><tr><th>Fecha</th><th>Razón social</th><th>Producto(s)</th><th>Contacto</th><th>Email</th></tr></thead><tbody>';
+  filtered.forEach(s=>{
+    const fecha = s.fecha ? new Date(s.fecha).toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric'}) : '—';
+    const productos = [s.nombreProducto1, s.nombreProducto2, s.nombreProducto3].filter(Boolean).join(', ');
+    html += `<tr onclick="toggleDetail('${s._key}')">
+      <td>${fecha}</td>
+      <td>${escapeHtml(s.nombre||'—')}</td>
+      <td>${escapeHtml(productos||'—')}</td>
+      <td>${escapeHtml(s.contacto||'—')}</td>
+      <td>${escapeHtml(s.email||'—')}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+
+  html += '<div id="detailArea"></div>';
+  tableWrap.innerHTML = html;
+
+  if(expandedId){
+    const item = allSubmissions.find(s=>s._key === expandedId);
+    if(item) showDetail(item);
+  }
+}
+
+function toggleDetail(key){
+  if(expandedId === key){
+    expandedId = null;
+    document.getElementById('detailArea').innerHTML = '';
+    return;
+  }
+  expandedId = key;
+  const item = allSubmissions.find(s=>s._key === key);
+  if(item) showDetail(item);
+}
+
+function productBlockHtml(item, n){
+  const nombre = item['nombreProducto'+n];
+  const variedad = item['variedad'+n];
+  const anio = item['anio'+n];
+  const fecha = item['fechaOptima'+n];
+  const desc = item['descripcionProducto'+n];
+  const fotos = item['fotosProducto'+n] || [];
+  if(!nombre && !variedad && !desc && fotos.length === 0) return '';
+  const fotosHtml = fotos.length
+    ? `<div class="photo-preview" style="margin-top:8px;">${fotos.map(f=> f.startsWith('data:video') ? `<video controls src="${f}"></video>` : `<img src="${f}" alt="Foto producto ${n}">`).join('')}</div>`
+    : '';
+  return `
+    <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--line);">
+      <div style="font-weight:600; margin-bottom:4px;">Producto / experiencia ${n}</div>
+      <div><b>Nombre:</b> ${escapeHtml(nombre||'—')}</div>
+      <div><b>Variedad:</b> ${escapeHtml(variedad||'—')}</div>
+      <div><b>Año:</b> ${escapeHtml(anio||'—')}</div>
+      <div><b>Fecha óptima consumo / uso:</b> ${escapeHtml(fecha||'—')}</div>
+      <div><b>Descripción:</b> ${escapeHtml(desc||'—')}</div>
+      ${fotosHtml}
+    </div>`;
+}
+
+function showDetail(item){
+  const area = document.getElementById('detailArea');
+  area.innerHTML = `
+    <div class="detail-box open">
+      <div><b>Nombre / Razón social:</b> ${escapeHtml(item.nombre||'—')}</div>
+      <div><b>CUIT / Tax ID:</b> ${escapeHtml(item.cuit||'—')}</div>
+      <div><b>Persona de contacto:</b> ${escapeHtml(item.contacto||'—')}</div>
+      <div><b>Email:</b> ${escapeHtml(item.email||'—')}</div>
+      <div><b>Teléfono:</b> ${escapeHtml(item.telefono||'—')}</div>
+      <div><b>Dirección:</b> ${escapeHtml(item.direccion||'—')}</div>
+      <div><b>Ciudad:</b> ${escapeHtml(item.ciudad||'—')}</div>
+      <div><b>Provincia:</b> ${escapeHtml(item.provincia||'—')}</div>
+      <div><b>País:</b> ${escapeHtml(item.pais||'—')}</div>
+      <div><b>Redes sociales:</b> ${escapeHtml(item.redes||'—')}</div>
+      <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--line);"><b>Formas de cobro aceptadas:</b> ${(item.formaCobro && item.formaCobro.length) ? escapeHtml(item.formaCobro.join(', ')) : '—'}</div>
+      <div><b>Detalle o información de interés:</b> ${escapeHtml(item.detalleInteres||'—')}</div>
+      ${productBlockHtml(item,1)}
+      ${productBlockHtml(item,2)}
+      ${productBlockHtml(item,3)}
+      <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--line);"><b>Comentarios:</b> ${escapeHtml(item.comentarios||'—')}</div>
+      <div><b>Fecha de envío:</b> ${item.fecha ? new Date(item.fecha).toLocaleString('es-AR') : '—'}</div>
+      ${item.firma ? `<div style="margin-top:10px;"><b>Firma:</b><br><img src="${item.firma}" alt="Firma" style="max-width:260px; margin-top:6px; border:1px solid var(--line); border-radius:8px; background:#fff;"></div>` : ''}
+      <div class="row-actions">
+        <button class="ghost" onclick="deleteSubmission('${item._key}')">Eliminar esta respuesta</button>
+      </div>
+    </div>`;
+}
+
+async function deleteSubmission(key){
+  if(!confirm('¿Eliminar esta respuesta del respaldo? Esta acción no se puede deshacer.')) return;
+  try{
+    await window.storage.delete(key, true);
+    expandedId = null;
+    await refreshData();
+  }catch(e){
+    alert('No se pudo eliminar. Intentá de nuevo.');
+  }
+}
+
+function downloadCSV(){
+  if(allSubmissions.length === 0){ alert('Todavía no hay respuestas para descargar.'); return; }
+  const cols = ['fecha','nombre','cuit','contacto','email','telefono','direccion','ciudad','provincia','pais','redes',
+    'formaCobro','detalleInteres',
+    'nombreProducto1','variedad1','anio1','fechaOptima1','descripcionProducto1','fotosProducto1',
+    'nombreProducto2','variedad2','anio2','fechaOptima2','descripcionProducto2','fotosProducto2',
+    'nombreProducto3','variedad3','anio3','fechaOptima3','descripcionProducto3','fotosProducto3',
+    'comentarios','firma'];
+  const headerLabels = ['Fecha','Nombre / Razón social','CUIT / Tax ID','Persona de contacto','Email','Teléfono','Dirección','Ciudad','Provincia','País','Redes sociales',
+    'Formas de cobro aceptadas','Detalle / información de interés',
+    'Producto 1 - Nombre','Producto 1 - Variedad','Producto 1 - Año','Producto 1 - Fecha óptima','Producto 1 - Descripción','Producto 1 - Fotos/Videos',
+    'Producto 2 - Nombre','Producto 2 - Variedad','Producto 2 - Año','Producto 2 - Fecha óptima','Producto 2 - Descripción','Producto 2 - Fotos/Videos',
+    'Producto 3 - Nombre','Producto 3 - Variedad','Producto 3 - Año','Producto 3 - Fecha óptima','Producto 3 - Descripción','Producto 3 - Fotos/Videos',
+    'Comentarios','Firma'];
+  const rows = [headerLabels.join(',')];
+  allSubmissions.forEach(s=>{
+    const row = cols.map(c=>{
+      let v;
+      if(c === 'firma') v = s.firma ? 'Sí (ver panel)' : 'No';
+      else if(c === 'formaCobro') v = (s.formaCobro && s.formaCobro.length) ? s.formaCobro.join('; ') : '';
+      else if(c.startsWith('fotosProducto')) v = (s[c] && s[c].length) ? s[c].length + ' archivo(s) (ver panel)' : '0';
+      else v = s[c] || '';
+      v = String(v).replace(/"/g,'""');
+      return `"${v}"`;
+    });
+    rows.push(row.join(','));
+  });
+  const csv = rows.join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'matic-market-respaldo-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+</script>
+</body>
+</html>
