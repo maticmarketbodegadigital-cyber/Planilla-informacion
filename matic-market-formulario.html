@@ -160,6 +160,23 @@
     width:64px; height:64px; object-fit:cover;
     border-radius:10px; border:1.5px solid var(--line);
   }
+  .photo-preview video{
+    width:120px; height:80px; object-fit:cover;
+    border-radius:10px; border:1.5px solid var(--line);
+    background:#000;
+  }
+  .checkbox-group{
+    display:flex; flex-wrap:wrap; gap:10px 20px; margin-top:4px;
+  }
+  .checkbox-item{
+    display:flex; align-items:center; gap:8px;
+    font-size:14.5px; font-weight:500; color:var(--charcoal);
+    cursor:pointer; font-family:'Josefin Sans', sans-serif;
+  }
+  .checkbox-item input[type=checkbox]{
+    width:18px; height:18px; accent-color:var(--camel); cursor:pointer;
+    flex-shrink:0;
+  }
   .field input:focus, .field select:focus, .field textarea:focus{
     border-color:var(--camel);
     background:#fff;
@@ -358,6 +375,22 @@
           </div>
         </div>
 
+        <div class="section-label">FORMAS DE COBRO ACEPTADAS</div>
+        <p class="hint" style="margin:-6px 0 16px;">Elegí las formas de cobro que aceptás para tus ventas en Matic Market.</p>
+        <div class="field">
+          <label>Medios de pago<span class="req">*</span></label>
+          <div class="checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" name="formaCobro" value="Mercado Pago"> Mercado Pago</label>
+            <label class="checkbox-item"><input type="checkbox" name="formaCobro" value="Stripe"> Stripe</label>
+            <label class="checkbox-item"><input type="checkbox" name="formaCobro" value="Transferencia"> Transferencia</label>
+            <label class="checkbox-item"><input type="checkbox" name="formaCobro" value="Wallet Crypto"> Wallet Crypto</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Detalle o información de interés</label>
+          <textarea name="detalleInteres" placeholder="Ej: alias / CBU, cuenta de Mercado Pago, dirección de wallet, condiciones especiales de cobro, u otro dato que quieras dejar registrado"></textarea>
+        </div>
+
         <div class="section-label">PRODUCTO / EXPERIENCIA 1</div>
         <p class="hint" style="margin:-6px 0 16px;">Completá estos datos para dar de alta un producto o experiencia en Matic Market. Podés cargar hasta 3 productos distintos en este mismo formulario.</p>
         <div class="field">
@@ -383,9 +416,9 @@
           <textarea name="descripcionProducto1" placeholder="Describí el producto o experiencia" required></textarea>
         </div>
         <div class="field">
-          <label>Fotos del producto / experiencia</label>
-          <input type="file" id="fotos1" accept="image/*" multiple>
-          <div class="hint" style="margin-top:8px;">Hasta 3 fotos (JPG o PNG).</div>
+          <label>Fotos y videos del producto / experiencia</label>
+          <input type="file" id="fotos1" accept="image/*,video/*" multiple>
+          <div class="hint" style="margin-top:8px;">Hasta 3 archivos: fotos (JPG o PNG) o videos (MP4/MOV, máx. 8MB por video).</div>
           <div class="photo-preview" id="fotos1Preview"></div>
         </div>
 
@@ -413,9 +446,9 @@
           <textarea name="descripcionProducto2" placeholder="Describí el producto o experiencia"></textarea>
         </div>
         <div class="field">
-          <label>Fotos del producto / experiencia</label>
-          <input type="file" id="fotos2" accept="image/*" multiple>
-          <div class="hint" style="margin-top:8px;">Hasta 3 fotos (JPG o PNG).</div>
+          <label>Fotos y videos del producto / experiencia</label>
+          <input type="file" id="fotos2" accept="image/*,video/*" multiple>
+          <div class="hint" style="margin-top:8px;">Hasta 3 archivos: fotos (JPG o PNG) o videos (MP4/MOV, máx. 8MB por video).</div>
           <div class="photo-preview" id="fotos2Preview"></div>
         </div>
 
@@ -443,9 +476,9 @@
           <textarea name="descripcionProducto3" placeholder="Describí el producto o experiencia"></textarea>
         </div>
         <div class="field">
-          <label>Fotos del producto / experiencia</label>
-          <input type="file" id="fotos3" accept="image/*" multiple>
-          <div class="hint" style="margin-top:8px;">Hasta 3 fotos (JPG o PNG).</div>
+          <label>Fotos y videos del producto / experiencia</label>
+          <input type="file" id="fotos3" accept="image/*,video/*" multiple>
+          <div class="hint" style="margin-top:8px;">Hasta 3 archivos: fotos (JPG o PNG) o videos (MP4/MOV, máx. 8MB por video).</div>
           <div class="photo-preview" id="fotos3Preview"></div>
         </div>
 
@@ -592,19 +625,50 @@ document.getElementById('clearSignBtn').addEventListener('click', function(){
   signPad.classList.remove('filled');
 });
 
-/* --- photo handling (preview + resize before storing) --- */
+/* --- photo & video handling (preview + resize/encode before storing) --- */
 const MAX_PHOTOS_PER_PRODUCT = 3;
+const MAX_VIDEO_BYTES = 8 * 1024 * 1024; // 8MB por video
 
 function wirePhotoPreview(inputId, previewId){
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
   input.addEventListener('change', function(){
     preview.innerHTML = '';
-    const files = Array.from(input.files || []).slice(0, MAX_PHOTOS_PER_PRODUCT);
+    let files = Array.from(input.files || []);
+    const rejected = [];
+    const accepted = [];
     files.forEach(f=>{
-      const img = document.createElement('img');
-      img.src = URL.createObjectURL(f);
-      preview.appendChild(img);
+      if(f.type.startsWith('video/') && f.size > MAX_VIDEO_BYTES){
+        rejected.push(f.name);
+      } else {
+        accepted.push(f);
+      }
+    });
+    const kept = accepted.slice(0, MAX_PHOTOS_PER_PRODUCT);
+
+    // reconstruye el input.files para que solo queden los archivos aceptados
+    if(window.DataTransfer){
+      const dt = new DataTransfer();
+      kept.forEach(f=> dt.items.add(f));
+      input.files = dt.files;
+    }
+
+    if(rejected.length){
+      alert('Estos archivos no se agregaron porque superan el tamaño máximo permitido para videos (8MB): ' + rejected.join(', '));
+    }
+
+    kept.forEach(f=>{
+      if(f.type.startsWith('video/')){
+        const video = document.createElement('video');
+        video.src = URL.createObjectURL(f);
+        video.muted = true;
+        video.controls = true;
+        preview.appendChild(video);
+      } else {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(f);
+        preview.appendChild(img);
+      }
     });
   });
 }
@@ -636,12 +700,27 @@ function resizeImageFile(file, maxDim, quality){
   });
 }
 
+function fileToBase64(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=> resolve(reader.result);
+    reader.onerror = ()=> reject(new Error('file read failed'));
+    reader.readAsDataURL(file);
+  });
+}
+
 async function getResizedPhotos(inputId){
   const input = document.getElementById(inputId);
   const files = Array.from(input.files || []).slice(0, MAX_PHOTOS_PER_PRODUCT);
   const results = [];
   for(const f of files){
-    try{ results.push(await resizeImageFile(f, 900, 0.72)); }
+    try{
+      if(f.type.startsWith('video/')){
+        results.push(await fileToBase64(f));
+      } else {
+        results.push(await resizeImageFile(f, 900, 0.72));
+      }
+    }
     catch(e){ /* skip file that failed to process */ }
   }
   return results;
@@ -674,6 +753,14 @@ document.getElementById('clientForm').addEventListener('submit', async function(
   const errBox = document.getElementById('formError');
   errBox.style.display = 'none';
 
+  const formasCobroSeleccionadas = Array.from(document.querySelectorAll('input[name="formaCobro"]:checked')).map(el=> el.value);
+  if(formasCobroSeleccionadas.length === 0){
+    errBox.textContent = 'Elegí al menos una forma de cobro aceptada.';
+    errBox.style.display = 'block';
+    document.querySelector('.checkbox-group').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
   if(!hasSignature){
     errBox.textContent = 'Falta completar la firma antes de enviar.';
     errBox.style.display = 'block';
@@ -686,7 +773,8 @@ document.getElementById('clientForm').addEventListener('submit', async function(
 
   const fd = new FormData(e.target);
   const data = {};
-  fd.forEach((v,k)=>{ if(typeof v === 'string') data[k] = v.trim(); });
+  fd.forEach((v,k)=>{ if(typeof v === 'string' && k !== 'formaCobro') data[k] = v.trim(); });
+  data.formaCobro = formasCobroSeleccionadas;
   data.fecha = new Date().toISOString();
   data.firma = signPad.toDataURL('image/png');
 
@@ -702,19 +790,29 @@ document.getElementById('clientForm').addEventListener('submit', async function(
 
   const key = 'submission:' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
 
+  let localSaveOk = false;
   try{
-    const result = await window.storage.set(key, JSON.stringify(data), true);
-    if(!result) throw new Error('no result');
-    sendToSheets(data);
+    if(window.storage && typeof window.storage.set === 'function'){
+      const result = await window.storage.set(key, JSON.stringify(data), true);
+      localSaveOk = !!result;
+    }
+  }catch(err){
+    /* window.storage no está disponible fuera del entorno de Claude.ai (por ej. en Netlify).
+       No es un error crítico: seguimos con el envío a Google Sheets. */
+  }
+
+  const sheetsConfigured = !!SHEETS_WEBHOOK_URL;
+  sendToSheets(data);
+
+  if(localSaveOk || sheetsConfigured){
     document.getElementById('formCard').style.display = 'none';
     document.getElementById('successCard').style.display = 'block';
-  }catch(err){
+  } else {
     errBox.textContent = 'Hubo un problema al guardar tu información. Por favor intentá de nuevo.';
     errBox.style.display = 'block';
-  }finally{
-    btn.disabled = false;
-    btn.textContent = 'Enviar información';
   }
+  btn.disabled = false;
+  btn.textContent = 'Enviar información';
 });
 
 function sendToSheets(data){
@@ -742,6 +840,17 @@ function resetForm(){
 
 async function refreshData(){
   const tableWrap = document.getElementById('tableWrap');
+
+  if(!window.storage || typeof window.storage.list !== 'function'){
+    tableWrap.innerHTML = `<div class="empty-state">
+      <div class="big">Este panel no está disponible en este sitio</div>
+      El panel de respaldo usa un almacenamiento que solo funciona dentro de Claude.ai.
+      En este hosting (Netlify), las respuestas se guardan directamente en la planilla de Google Sheets conectada al formulario: revisalas ahí.
+    </div>`;
+    document.getElementById('countLabel').textContent = '— (ver Google Sheets)';
+    return;
+  }
+
   tableWrap.innerHTML = '<div class="empty-state">Cargando respuestas...</div>';
   try{
     const listResult = await window.storage.list('submission:', true);
@@ -824,7 +933,7 @@ function productBlockHtml(item, n){
   const fotos = item['fotosProducto'+n] || [];
   if(!nombre && !variedad && !desc && fotos.length === 0) return '';
   const fotosHtml = fotos.length
-    ? `<div class="photo-preview" style="margin-top:8px;">${fotos.map(f=>`<img src="${f}" alt="Foto producto ${n}">`).join('')}</div>`
+    ? `<div class="photo-preview" style="margin-top:8px;">${fotos.map(f=> f.startsWith('data:video') ? `<video controls src="${f}"></video>` : `<img src="${f}" alt="Foto producto ${n}">`).join('')}</div>`
     : '';
   return `
     <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--line);">
@@ -852,6 +961,8 @@ function showDetail(item){
       <div><b>Provincia:</b> ${escapeHtml(item.provincia||'—')}</div>
       <div><b>País:</b> ${escapeHtml(item.pais||'—')}</div>
       <div><b>Redes sociales:</b> ${escapeHtml(item.redes||'—')}</div>
+      <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--line);"><b>Formas de cobro aceptadas:</b> ${(item.formaCobro && item.formaCobro.length) ? escapeHtml(item.formaCobro.join(', ')) : '—'}</div>
+      <div><b>Detalle o información de interés:</b> ${escapeHtml(item.detalleInteres||'—')}</div>
       ${productBlockHtml(item,1)}
       ${productBlockHtml(item,2)}
       ${productBlockHtml(item,3)}
@@ -878,21 +989,24 @@ async function deleteSubmission(key){
 function downloadCSV(){
   if(allSubmissions.length === 0){ alert('Todavía no hay respuestas para descargar.'); return; }
   const cols = ['fecha','nombre','cuit','contacto','email','telefono','direccion','ciudad','provincia','pais','redes',
+    'formaCobro','detalleInteres',
     'nombreProducto1','variedad1','anio1','fechaOptima1','descripcionProducto1','fotosProducto1',
     'nombreProducto2','variedad2','anio2','fechaOptima2','descripcionProducto2','fotosProducto2',
     'nombreProducto3','variedad3','anio3','fechaOptima3','descripcionProducto3','fotosProducto3',
     'comentarios','firma'];
   const headerLabels = ['Fecha','Nombre / Razón social','CUIT / Tax ID','Persona de contacto','Email','Teléfono','Dirección','Ciudad','Provincia','País','Redes sociales',
-    'Producto 1 - Nombre','Producto 1 - Variedad','Producto 1 - Año','Producto 1 - Fecha óptima','Producto 1 - Descripción','Producto 1 - Fotos',
-    'Producto 2 - Nombre','Producto 2 - Variedad','Producto 2 - Año','Producto 2 - Fecha óptima','Producto 2 - Descripción','Producto 2 - Fotos',
-    'Producto 3 - Nombre','Producto 3 - Variedad','Producto 3 - Año','Producto 3 - Fecha óptima','Producto 3 - Descripción','Producto 3 - Fotos',
+    'Formas de cobro aceptadas','Detalle / información de interés',
+    'Producto 1 - Nombre','Producto 1 - Variedad','Producto 1 - Año','Producto 1 - Fecha óptima','Producto 1 - Descripción','Producto 1 - Fotos/Videos',
+    'Producto 2 - Nombre','Producto 2 - Variedad','Producto 2 - Año','Producto 2 - Fecha óptima','Producto 2 - Descripción','Producto 2 - Fotos/Videos',
+    'Producto 3 - Nombre','Producto 3 - Variedad','Producto 3 - Año','Producto 3 - Fecha óptima','Producto 3 - Descripción','Producto 3 - Fotos/Videos',
     'Comentarios','Firma'];
   const rows = [headerLabels.join(',')];
   allSubmissions.forEach(s=>{
     const row = cols.map(c=>{
       let v;
       if(c === 'firma') v = s.firma ? 'Sí (ver panel)' : 'No';
-      else if(c.startsWith('fotosProducto')) v = (s[c] && s[c].length) ? s[c].length + ' foto(s) (ver panel)' : '0';
+      else if(c === 'formaCobro') v = (s.formaCobro && s.formaCobro.length) ? s.formaCobro.join('; ') : '';
+      else if(c.startsWith('fotosProducto')) v = (s[c] && s[c].length) ? s[c].length + ' archivo(s) (ver panel)' : '0';
       else v = s[c] || '';
       v = String(v).replace(/"/g,'""');
       return `"${v}"`;
