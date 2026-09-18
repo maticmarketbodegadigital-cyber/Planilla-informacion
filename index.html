@@ -790,19 +790,29 @@ document.getElementById('clientForm').addEventListener('submit', async function(
 
   const key = 'submission:' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
 
+  let localSaveOk = false;
   try{
-    const result = await window.storage.set(key, JSON.stringify(data), true);
-    if(!result) throw new Error('no result');
-    sendToSheets(data);
+    if(window.storage && typeof window.storage.set === 'function'){
+      const result = await window.storage.set(key, JSON.stringify(data), true);
+      localSaveOk = !!result;
+    }
+  }catch(err){
+    /* window.storage no está disponible fuera del entorno de Claude.ai (por ej. en Netlify).
+       No es un error crítico: seguimos con el envío a Google Sheets. */
+  }
+
+  const sheetsConfigured = !!SHEETS_WEBHOOK_URL;
+  sendToSheets(data);
+
+  if(localSaveOk || sheetsConfigured){
     document.getElementById('formCard').style.display = 'none';
     document.getElementById('successCard').style.display = 'block';
-  }catch(err){
+  } else {
     errBox.textContent = 'Hubo un problema al guardar tu información. Por favor intentá de nuevo.';
     errBox.style.display = 'block';
-  }finally{
-    btn.disabled = false;
-    btn.textContent = 'Enviar información';
   }
+  btn.disabled = false;
+  btn.textContent = 'Enviar información';
 });
 
 function sendToSheets(data){
@@ -830,6 +840,17 @@ function resetForm(){
 
 async function refreshData(){
   const tableWrap = document.getElementById('tableWrap');
+
+  if(!window.storage || typeof window.storage.list !== 'function'){
+    tableWrap.innerHTML = `<div class="empty-state">
+      <div class="big">Este panel no está disponible en este sitio</div>
+      El panel de respaldo usa un almacenamiento que solo funciona dentro de Claude.ai.
+      En este hosting (Netlify), las respuestas se guardan directamente en la planilla de Google Sheets conectada al formulario: revisalas ahí.
+    </div>`;
+    document.getElementById('countLabel').textContent = '— (ver Google Sheets)';
+    return;
+  }
+
   tableWrap.innerHTML = '<div class="empty-state">Cargando respuestas...</div>';
   try{
     const listResult = await window.storage.list('submission:', true);
