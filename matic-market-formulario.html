@@ -407,9 +407,15 @@
             <input type="text" name="anio1" inputmode="numeric" maxlength="4" placeholder="Ej: 2024" required>
           </div>
         </div>
-        <div class="field">
-          <label>Fecha óptima consumo / uso<span class="req">*</span></label>
-          <input type="text" name="fechaOptima1" placeholder="Ej: Diciembre 2026" required>
+        <div class="row2">
+          <div class="field">
+            <label>Fecha óptima consumo / uso<span class="req">*</span></label>
+            <input type="text" name="fechaOptima1" placeholder="Ej: Diciembre 2026" required>
+          </div>
+          <div class="field">
+            <label>Precio (USD)<span class="req">*</span></label>
+            <input type="text" name="precio1" inputmode="decimal" placeholder="Ej: 150" required>
+          </div>
         </div>
         <div class="field">
           <label>Descripción<span class="req">*</span></label>
@@ -437,9 +443,15 @@
             <input type="text" name="anio2" inputmode="numeric" maxlength="4" placeholder="Ej: 2024">
           </div>
         </div>
-        <div class="field">
-          <label>Fecha óptima consumo / uso</label>
-          <input type="text" name="fechaOptima2" placeholder="Ej: Diciembre 2026">
+        <div class="row2">
+          <div class="field">
+            <label>Fecha óptima consumo / uso</label>
+            <input type="text" name="fechaOptima2" placeholder="Ej: Diciembre 2026">
+          </div>
+          <div class="field">
+            <label>Precio (USD)</label>
+            <input type="text" name="precio2" inputmode="decimal" placeholder="Ej: 150">
+          </div>
         </div>
         <div class="field">
           <label>Descripción</label>
@@ -467,9 +479,15 @@
             <input type="text" name="anio3" inputmode="numeric" maxlength="4" placeholder="Ej: 2024">
           </div>
         </div>
-        <div class="field">
-          <label>Fecha óptima consumo / uso</label>
-          <input type="text" name="fechaOptima3" placeholder="Ej: Diciembre 2026">
+        <div class="row2">
+          <div class="field">
+            <label>Fecha óptima consumo / uso</label>
+            <input type="text" name="fechaOptima3" placeholder="Ej: Diciembre 2026">
+          </div>
+          <div class="field">
+            <label>Precio (USD)</label>
+            <input type="text" name="precio3" inputmode="decimal" placeholder="Ej: 150">
+          </div>
         </div>
         <div class="field">
           <label>Descripción</label>
@@ -929,6 +947,7 @@ function productBlockHtml(item, n){
   const variedad = item['variedad'+n];
   const anio = item['anio'+n];
   const fecha = item['fechaOptima'+n];
+  const precio = item['precio'+n];
   const desc = item['descripcionProducto'+n];
   const fotos = item['fotosProducto'+n] || [];
   if(!nombre && !variedad && !desc && fotos.length === 0) return '';
@@ -942,6 +961,7 @@ function productBlockHtml(item, n){
       <div><b>Variedad:</b> ${escapeHtml(variedad||'—')}</div>
       <div><b>Año:</b> ${escapeHtml(anio||'—')}</div>
       <div><b>Fecha óptima consumo / uso:</b> ${escapeHtml(fecha||'—')}</div>
+      <div><b>Precio (USD):</b> ${escapeHtml(precio||'—')}</div>
       <div><b>Descripción:</b> ${escapeHtml(desc||'—')}</div>
       ${fotosHtml}
     </div>`;
@@ -990,15 +1010,15 @@ function downloadCSV(){
   if(allSubmissions.length === 0){ alert('Todavía no hay respuestas para descargar.'); return; }
   const cols = ['fecha','nombre','cuit','contacto','email','telefono','direccion','ciudad','provincia','pais','redes',
     'formaCobro','detalleInteres',
-    'nombreProducto1','variedad1','anio1','fechaOptima1','descripcionProducto1','fotosProducto1',
-    'nombreProducto2','variedad2','anio2','fechaOptima2','descripcionProducto2','fotosProducto2',
-    'nombreProducto3','variedad3','anio3','fechaOptima3','descripcionProducto3','fotosProducto3',
+    'nombreProducto1','variedad1','anio1','fechaOptima1','precio1','descripcionProducto1','fotosProducto1',
+    'nombreProducto2','variedad2','anio2','fechaOptima2','precio2','descripcionProducto2','fotosProducto2',
+    'nombreProducto3','variedad3','anio3','fechaOptima3','precio3','descripcionProducto3','fotosProducto3',
     'comentarios','firma'];
   const headerLabels = ['Fecha','Nombre / Razón social','CUIT / Tax ID','Persona de contacto','Email','Teléfono','Dirección','Ciudad','Provincia','País','Redes sociales',
     'Formas de cobro aceptadas','Detalle / información de interés',
-    'Producto 1 - Nombre','Producto 1 - Variedad','Producto 1 - Año','Producto 1 - Fecha óptima','Producto 1 - Descripción','Producto 1 - Fotos/Videos',
-    'Producto 2 - Nombre','Producto 2 - Variedad','Producto 2 - Año','Producto 2 - Fecha óptima','Producto 2 - Descripción','Producto 2 - Fotos/Videos',
-    'Producto 3 - Nombre','Producto 3 - Variedad','Producto 3 - Año','Producto 3 - Fecha óptima','Producto 3 - Descripción','Producto 3 - Fotos/Videos',
+    'Producto 1 - Nombre','Producto 1 - Variedad','Producto 1 - Año','Producto 1 - Fecha óptima','Producto 1 - Precio (USD)','Producto 1 - Descripción','Producto 1 - Fotos/Videos',
+    'Producto 2 - Nombre','Producto 2 - Variedad','Producto 2 - Año','Producto 2 - Fecha óptima','Producto 2 - Precio (USD)','Producto 2 - Descripción','Producto 2 - Fotos/Videos',
+    'Producto 3 - Nombre','Producto 3 - Variedad','Producto 3 - Año','Producto 3 - Fecha óptima','Producto 3 - Precio (USD)','Producto 3 - Descripción','Producto 3 - Fotos/Videos',
     'Comentarios','Firma'];
   const rows = [headerLabels.join(',')];
   allSubmissions.forEach(s=>{
